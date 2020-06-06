@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+
+<head>
+    <link rel = "stylesheet" href = "./style/makeQuestionnaire.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <title> Make a Questionnaire </title>
+</head>
+
+<body>
+    
+    <section class = "wrapper">
+        <h1 id = "mainPageTitle">Questionnaire Cat</h1>
+        
+        <section id = "makeQuestion">
+            <form id = "questionAnswerForm">
+                <fieldset id = "fieldset">
+                    <legend id="addQuestionTitle">Add a question:</legend>
+                    <p id = "dropdownMenu">
+                        <label>Select answer type</label>
+                        <select id = "questionTypesList">
+                            <option value = "1">Text</option>
+                            <option value = "2">Checkbox</option>
+                        </select>
+                    </p>
+                    <section id = "QandASection">
+                        <section id = "questionSection">
+                            <input class = "inputField" type = "text" placeholder = "Enter a question.">
+                        </section>
+                        <section id = "AnswerSection1">
+                            <input class = "inputField" type = "text" placeholder = "Enter an answer.">
+                            <input class = "inputField" id = "removeButton1" type = "button" value = "Remove answer">
+                        </section>
+                        <section id = AnswerSection2>
+                            <input class = "inputField" type = "text" placeholder = "Enter an answer.">
+                            <input class = "inputField" id = "removeButton2" type = "button" value = "Remove answer">
+                        </section>
+                             
+                    </section>
+                    <section id = "buttons">
+                        <input class = "inputField" id = "addNewAnswer" type = "button" value = "Add another answer"> 
+                        <input class = "inputField" id = "addNewQuestionSubmitButton" type = "submit" value = "Add to questionnaire">
+                    </section>
+                </fieldset>   
+            </form>
+        </section>
+
+        <section id = "questionEditorSection">
+
+        </section>
+
+    </section>
+    <script src = "./js/makeNewQuestionnaire.js"></script>
+</body>

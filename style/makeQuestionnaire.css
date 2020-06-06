@@ -1,0 +1,19 @@
+.inputField{
+    float: left;
+    margin-right:0.3125em;
+    clear: both;
+    margin-bottom: 0.7em;
+}
+
+#questionInput{
+    margin-bottom: 1em;
+}
+
+.wrapper{
+    display: grid;
+    font-family: helvetica;
+}
+
+#mainPageTitle{
+    text-align: center;
+}
