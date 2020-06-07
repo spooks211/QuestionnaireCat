@@ -4,6 +4,8 @@ let newAnswerUniqueIdCounter = 3;
 //this starts at 3 because 2 answers are given by default, this is made
 //so each newly generated element can have a unique id
 
+let dropdownAnswerType;
+
 //makes an array for all the instances of the element "removeButton"
 const removeButtonArray = [document.getElementById("removeButton1")];
 removeButtonArray.push(document.getElementById("removeButton2"));
@@ -49,8 +51,22 @@ function removeAnswer(i){
     }
 }
 
+// this function reads the answer type selected in the dropdown menu, then converts the
+// index value to from either 1 or 2, to text or checkbox so it can then later be processed
 function readAnswerType(){
+    const dropdown = document.getElementById("questionTypesList");
+    const userSelection = dropdown.options[dropdown.selectedIndex].value;
     
+
+    if (userSelection == 1){
+        dropdownAnswerType =  "text";
+    }
+
+    if (userSelection == 2){
+        dropdownAnswerType = "checkbox";
+    }
+    return dropdownAnswerType;
+
 }
 
 //Method that adds the question and answer choices to questionnaire
@@ -68,8 +84,12 @@ addAnswerButton.addEventListener('click', event => {
 });
 
 //Onclick listener for add to questionnaire button
+//calls the readAnswertype function also, so it gets submitted to the server
+//with the rest of the page
 const addQuestionButton = document.getElementById("addNewQuestionSubmitButton");
 
 addQuestionButton.addEventListener('click', event => {
+    readAnswerType();
     addToQuestionnaire();
 });
+
