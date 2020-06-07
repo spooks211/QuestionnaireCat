@@ -10,6 +10,10 @@ let dropdownAnswerType;
 const removeButtonArray = [document.getElementById("removeButton1")];
 removeButtonArray.push(document.getElementById("removeButton2"));
 
+//makes an array that stores all instances of the element "answerField"
+const answerFieldArray = [document.getElementById("answerField1")];
+answerFieldArray.push(document.getElementById("answerField2"));
+
 //Method that adds a new answer input field and new remove answer button
 function addNewAnswer(){
     const newAnswer = document.createElement('input');
@@ -21,6 +25,8 @@ function addNewAnswer(){
     newAnswer.className = "inputField";
     newAnswer.type = "text";
     newAnswer.placeholder = "Enter an answer";
+    newAnswer.id = "answerField" + newAnswerUniqueIdCounter;
+    answerFieldArray.push(newAnswer);
 
     newRemoveButton.className = "inputField";
     newRemoveButton.type = "button";
@@ -51,13 +57,12 @@ function removeAnswer(i){
     }
 }
 
-// this function reads the answer type selected in the dropdown menu, then converts the
+// this method reads the answer type selected in the dropdown menu, then converts the
 // index value to from either 1 or 2, to text or checkbox so it can then later be processed
 function readAnswerType(){
     const dropdown = document.getElementById("questionTypesList");
     const userSelection = dropdown.options[dropdown.selectedIndex].value;
     
-
     if (userSelection == 1){
         dropdownAnswerType =  "text";
     }
@@ -69,9 +74,26 @@ function readAnswerType(){
 
 }
 
-//Method that adds the question and answer choices to questionnaire
-function addToQuestionnaire (){
+//this method reads and saves the question and answer choices and returns them
+function readQuestionAndAnswers(){
+    const questionValue = document.getElementById("questionInputField").value;
+    const answerValueArray = [];
 
+    let questionAndAnswers = {};
+    questionAndAnswers.question = questionValue;
+
+    for (let x = 0; x < answerFieldArray.length; x++){
+        answerValueArray.push(answerFieldArray[x].value);
+    }
+
+    questionAndAnswers.answers = answerValueArray;
+    return questionAndAnswers;
+}
+
+//method that sends the questionAndAnswers object and the dropDownAnswerType variable
+//for processing 
+function sendResultsToServer (dropdownAnswerType, questionAndAnswers){
+    
 }
 
 //Onclick listener for add new answer button
@@ -90,6 +112,7 @@ const addQuestionButton = document.getElementById("addNewQuestionSubmitButton");
 
 addQuestionButton.addEventListener('click', event => {
     readAnswerType();
-    addToQuestionnaire();
+    readQuestionAndAnswers();
+    sendResultsToServer();
 });
 
