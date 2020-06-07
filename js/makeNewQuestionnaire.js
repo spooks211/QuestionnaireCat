@@ -49,6 +49,10 @@ function removeAnswer(i){
     }
 }
 
+function readAnswerType(){
+    
+}
+
 //Method that adds the question and answer choices to questionnaire
 function addToQuestionnaire (){
 
