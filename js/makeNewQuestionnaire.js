@@ -4,8 +4,6 @@ let newAnswerUniqueIdCounter = 3;
 //this starts at 3 because 2 answers are given by default, this is made
 //so each newly generated element can have a unique id
 
-let dropdownAnswerType;
-
 //makes an array for all the instances of the element "removeButton"
 const removeButtonArray = [document.getElementById("removeButton1")];
 removeButtonArray.push(document.getElementById("removeButton2"));
@@ -62,6 +60,7 @@ function removeAnswer(i){
 function readAnswerType(){
     const dropdown = document.getElementById("questionTypesList");
     const userSelection = dropdown.options[dropdown.selectedIndex].value;
+    let dropdownAnswerType;
     
     if (userSelection == 1){
         dropdownAnswerType =  "text";
@@ -76,11 +75,10 @@ function readAnswerType(){
 
 //this method reads and saves the question and answer choices and returns them
 function readQuestionAndAnswers(){
-    const questionValue = document.getElementById("questionInputField").value;
     const answerValueArray = [];
-
     let questionAndAnswers = {};
-    questionAndAnswers.question = questionValue;
+
+    questionAndAnswers.question = document.getElementById("questionInputField").value;
 
     for (let x = 0; x < answerFieldArray.length; x++){
         answerValueArray.push(answerFieldArray[x].value);
@@ -93,7 +91,7 @@ function readQuestionAndAnswers(){
 //method that sends the questionAndAnswers object and the dropDownAnswerType variable
 //for processing 
 function sendResultsToServer (dropdownAnswerType, questionAndAnswers){
-    
+
 }
 
 //Onclick listener for add new answer button
@@ -101,7 +99,9 @@ const addAnswerButton = document.getElementById("addNewAnswer");
 
 addAnswerButton.addEventListener('click', event => {
     addNewAnswer();
-    newAnswerUniqueIdCounter += 1;
+    newAnswerUniqueIdCounter += 1; //this is so every time new answer is clicked it
+    //increments by one, meaning each new ID is unique when it is assigned in
+    //the addNewAnswer method
 
 });
 
