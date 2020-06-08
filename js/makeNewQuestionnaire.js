@@ -88,8 +88,25 @@ function readQuestionAndAnswers(){
     return questionAndAnswers;
 }
 
+function buildQuestion(dropdownAnswerType, questionAndAnswers){
+    const formattedSection = document.createElement('section');
+    const formattedQuestion = document.createElement('p');
+    formattedQuestion.value = questionAndAnswers.question;
+
+
+    for (let n = 0 ; n < questionAndAnswers.answers.length ; n++){
+        const formattedAnswers = document.createElement(dropdownAnswerType);
+        if (dropdownAnswerType == 'text'){
+            formattedAnswers.placeholder = questionAndAnswers.answers[n].value;
+        }
+        if (dropdownAnswerType == 'checkbox'){
+            formattedAnswers.label = questionAndAnswers.answers[n].value;
+        }
+    } 
+}
+
 //method that sends the questionAndAnswers object and the dropDownAnswerType variable
-//for processing 
+//to the server for processing 
 function sendResultsToServer (dropdownAnswerType, questionAndAnswers){
 
 }
