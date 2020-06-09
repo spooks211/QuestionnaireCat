@@ -4,6 +4,9 @@ let newAnswerUniqueIdCounter = 3;
 //this starts at 3 because 2 answers are given by default, this is made
 //so each newly generated element can have a unique id
 
+let radioButtonGroups = 0;
+//this is made so each radio button group can be unique across different questions
+
 //makes an array for all the instances of the element "removeButton"
 const removeButtonArray = [document.getElementById("removeButton1")];
 removeButtonArray.push(document.getElementById("removeButton2"));
@@ -69,7 +72,7 @@ function readAnswerType(){
     }
 
     if (userSelection == 2){
-        dropdownAnswerType = "checkbox";
+        dropdownAnswerType = "radio";
     }
     return dropdownAnswerType;
 
@@ -95,7 +98,6 @@ function readQuestionAndAnswers(){
     for (let x = 0; x < answerFieldArray.length; x++){
         answerValueArray.push(answerFieldArray[x].value);
     }
-
     questionAndAnswers.answers = answerValueArray;
     return questionAndAnswers;
 }
@@ -104,22 +106,44 @@ function readQuestionAndAnswers(){
 //this method builds and formats the question that can be viewed like the person answering
 //the questionnaire sees it, these will get added everytime the add to questionnaire
 //button is clicked
-function buildQuestion(dropdownAnswerType, questionAndAnswers){
+function buildQuestion(){
+    const QAObj = readQuestionAndAnswers();
+    const answerTypeObj = readAnswerType();
+    const viewQuestionSection = document.getElementById("questionEditorSection");
+
     const formattedSection = document.createElement('section');
     const formattedQuestion = document.createElement('p');
-    formattedQuestion.value = questionAndAnswers.question;
 
-    for (let i = 0 ; i < questionAndAnswers.answers.length ; i++){
-        const formattedAnswers = document.createElement(dropdownAnswerType);
-        formattedAnswers.id = "formattedAnswer" + i;
-        
-        if (dropdownAnswerType == 'text'){
-            formattedAnswers.placeholder = 'Enter an answer.';
+    formattedQuestion.innerHTML = QAObj.question;
+    formattedSection.appendChild(formattedQuestion);
+
+    if (answerTypeObj == 'text'){
+        const formattedAnswers = document.createElement('input');
+        formattedAnswers.placeholder = 'Enter an answer.';
+        formattedSection.appendChild(formattedAnswers);
+    }
+
+    if (answerTypeObj == 'radio'){
+        for (let i = 0 ; i < QAObj.answers.length ; i++){
+            const formattedAnswers = document.createElement('input');
+            const answerLabel = document.createElement('label');
+
+            formattedAnswers.type = answerTypeObj;
+            formattedAnswers.id = "formattedAnswer" + i;
+            formattedAnswers.value = radioButtonGroups;
+            formattedAnswers.name = radioButtonGroups;
+
+            answerLabel.htmlFor = radioButtonGroups;
+            answerLabel.innerHTML = QAObj.answers[i];
+
+            formattedSection.appendChild(answerLabel);
+            formattedSection.appendChild(formattedAnswers);
+            
         }
-        if (dropdownAnswerType == 'checkbox'){
-            formattedAnswers.label = questionAndAnswers.answers[i].value;
-        }
-    } 
+    }
+    
+    viewQuestionSection.appendChild(formattedSection);
+
 }
 
 //method that sends the questionAndAnswers object and the dropDownAnswerType variable
@@ -145,8 +169,8 @@ addAnswerButton.addEventListener('click', event => {
 const addQuestionButton = document.getElementById("addNewQuestionSubmitButton");
 
 addQuestionButton.addEventListener('click', event => {
-    readAnswerType();
-    readQuestionAndAnswers();
+    buildQuestion();
     sendResultsToServer();
+    radioButtonGroups += 1;
 });
 
