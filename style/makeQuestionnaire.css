@@ -17,3 +17,10 @@
 #mainPageTitle{
     text-align: center;
 }
+
+.answerClass{
+    float: left;
+    margin-right:0.3125em;
+    clear: both;
+    margin-bottom: 0.7em;
+}

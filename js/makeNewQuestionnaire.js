@@ -12,6 +12,8 @@ removeButtonArray.push(document.getElementById("removeButton2"));
 const answerFieldArray = [document.getElementById("answerField1")];
 answerFieldArray.push(document.getElementById("answerField2"));
 
+
+
 //Method that adds a new answer input field and new remove answer button
 function addNewAnswer(){
     const newAnswer = document.createElement('input');
@@ -20,7 +22,7 @@ function addNewAnswer(){
 
     newSection.id = "AnswerSection" + newAnswerUniqueIdCounter;
 
-    newAnswer.className = "inputField";
+    newAnswer.className = "answerClass";
     newAnswer.type = "text";
     newAnswer.placeholder = "Enter an answer";
     newAnswer.id = "answerField" + newAnswerUniqueIdCounter;
@@ -36,7 +38,7 @@ function addNewAnswer(){
     //so the newly made remove buttons get added to and selected from the array
     //properly
     for (let i = 0; i < removeButtonArray.length; i++){
-        removeButtonArray[i].addEventListener('click', removeAnswer(i));     
+        removeButtonArray[i].addEventListener('click', removeAnswer(i));  
     }
 
     newSection.appendChild(newAnswer);
@@ -80,6 +82,16 @@ function readQuestionAndAnswers(){
 
     questionAndAnswers.question = document.getElementById("questionInputField").value;
 
+    //this was added to keep the answerFieldArray array up to date with
+    //the currently present answer text fields in the dom, there was a bug
+    //where deleted answers remained present in the questionAndAnswers object
+    const answerFields = document.querySelectorAll(".answerClass");
+    for (let i = 0 ; i < answerFields.length ; i++ ){
+        if (answerFieldArray[i] != answerFields[i]){
+            answerFieldArray.splice(i , 1);
+        }
+    }
+
     for (let x = 0; x < answerFieldArray.length; x++){
         answerValueArray.push(answerFieldArray[x].value);
     }
@@ -87,6 +99,7 @@ function readQuestionAndAnswers(){
     questionAndAnswers.answers = answerValueArray;
     return questionAndAnswers;
 }
+
 
 //this method builds and formats the question that can be viewed like the person answering
 //the questionnaire sees it, these will get added everytime the add to questionnaire
@@ -96,15 +109,15 @@ function buildQuestion(dropdownAnswerType, questionAndAnswers){
     const formattedQuestion = document.createElement('p');
     formattedQuestion.value = questionAndAnswers.question;
 
-    for (let n = 0 ; n < questionAndAnswers.answers.length ; n++){
+    for (let i = 0 ; i < questionAndAnswers.answers.length ; i++){
         const formattedAnswers = document.createElement(dropdownAnswerType);
-        formattedAnswers.id = "formattedAnswer" + n;
+        formattedAnswers.id = "formattedAnswer" + i;
         
         if (dropdownAnswerType == 'text'){
             formattedAnswers.placeholder = 'Enter an answer.';
         }
         if (dropdownAnswerType == 'checkbox'){
-            formattedAnswers.label = questionAndAnswers.answers[n].value;
+            formattedAnswers.label = questionAndAnswers.answers[i].value;
         }
     } 
 }
