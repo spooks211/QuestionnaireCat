@@ -88,16 +88,20 @@ function readQuestionAndAnswers(){
     return questionAndAnswers;
 }
 
+//this method builds and formats the question that can be viewed like the person answering
+//the questionnaire sees it, these will get added everytime the add to questionnaire
+//button is clicked
 function buildQuestion(dropdownAnswerType, questionAndAnswers){
     const formattedSection = document.createElement('section');
     const formattedQuestion = document.createElement('p');
     formattedQuestion.value = questionAndAnswers.question;
 
-
     for (let n = 0 ; n < questionAndAnswers.answers.length ; n++){
         const formattedAnswers = document.createElement(dropdownAnswerType);
+        formattedAnswers.id = "formattedAnswer" + n;
+        
         if (dropdownAnswerType == 'text'){
-            formattedAnswers.placeholder = questionAndAnswers.answers[n].value;
+            formattedAnswers.placeholder = 'Enter an answer.';
         }
         if (dropdownAnswerType == 'checkbox'){
             formattedAnswers.label = questionAndAnswers.answers[n].value;
