@@ -116,12 +116,6 @@ function buildQuestion(){
     const formattedSection = document.createElement('section');
     const formattedQuestion = document.createElement('p');
 
-    //similar to how the remove answer button works the onclick listener has to be
-    //called here again
-    for (let x = 0 ; x < removeQuestionButtonArray.length; x++){
-        removeQuestionButtonArray[x].addEventListener('click', removeQuestionFromDom(x));
-    }
-
     formattedQuestion.innerHTML = QAObj.question;
     formattedSection.appendChild(formattedQuestion);
 
@@ -152,25 +146,21 @@ function buildQuestion(){
     //to make another method just for this
     QAObj.answerType = answerTypeObj;
     arrayOfQuestions.push(QAObj);
-    console.log(arrayOfQuestions);
 
     viewQuestionSection.appendChild(formattedSection);
 
     
 }
 
-//this responds to the remove question button onclick
-function removeQuestionFromDom(x){
-    return function(){
-        removeQuestionButtonArray[x].parentElement.remove();
-    }
-}
-
-//method that sends the questionAndAnswers object and the dropDownAnswerType variable
-//to the server for processing 
-function sendResultsToServer (){
-    let httpRequest;
-
+async function sendResultsToServer(){
+    console.log(arrayOfQuestions);
+    const response = await fetch('/api/questionnaires', {
+        method: 'post',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(arrayOfQuestions)
+    });
 }
 
 //Onclick listener for add new answer button
@@ -191,7 +181,11 @@ const addQuestionButton = document.getElementById("addNewQuestionSubmitButton");
 
 addQuestionButton.addEventListener('click', event => {
     buildQuestion();
-    sendResultsToServer();
     addQuestionCounter += 1;
+});
+
+const submitQuestion = document.getElementById("submitButton");
+submitQuestion.addEventListener('click', event =>{
+    sendResultsToServer();
 });
 
