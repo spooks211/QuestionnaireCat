@@ -4,7 +4,7 @@ let newAnswerUniqueIdCounter = 3;
 //this starts at 3 because 2 answers are given by default, this is made
 //so each newly generated element can have a unique id
 
-let radioButtonGroups = 0;
+let addQuestionCounter = 0;
 //this is made so each radio button group can be unique across different questions
 
 //makes an array for all the instances of the element "removeButton"
@@ -15,7 +15,9 @@ removeButtonArray.push(document.getElementById("removeButton2"));
 const answerFieldArray = [document.getElementById("answerField1")];
 answerFieldArray.push(document.getElementById("answerField2"));
 
-
+//this is made so each question/answer object gets added to an array that encapsulates 
+//the entire questionnaire, which then gets sent to the server
+let arrayOfQuestions = [];
 
 //Method that adds a new answer input field and new remove answer button
 function addNewAnswer(){
@@ -61,7 +63,7 @@ function removeAnswer(i){
 }
 
 // this method reads the answer type selected in the dropdown menu, then converts the
-// index value to from either 1 or 2, to text or checkbox so it can then later be processed
+// index value to from either 1 or 2, to text or radio so it can then later be processed
 function readAnswerType(){
     const dropdown = document.getElementById("questionTypesList");
     const userSelection = dropdown.options[dropdown.selectedIndex].value;
@@ -114,6 +116,12 @@ function buildQuestion(){
     const formattedSection = document.createElement('section');
     const formattedQuestion = document.createElement('p');
 
+    //similar to how the remove answer button works the onclick listener has to be
+    //called here again
+    for (let x = 0 ; x < removeQuestionButtonArray.length; x++){
+        removeQuestionButtonArray[x].addEventListener('click', removeQuestionFromDom(x));
+    }
+
     formattedQuestion.innerHTML = QAObj.question;
     formattedSection.appendChild(formattedQuestion);
 
@@ -129,26 +137,39 @@ function buildQuestion(){
             const answerLabel = document.createElement('label');
 
             formattedAnswers.type = answerTypeObj;
-            formattedAnswers.id = "formattedAnswer" + i;
-            formattedAnswers.value = radioButtonGroups;
-            formattedAnswers.name = radioButtonGroups;
+            formattedAnswers.value = addQuestionCounter;
+            formattedAnswers.name = addQuestionCounter;
 
-            answerLabel.htmlFor = radioButtonGroups;
+            answerLabel.htmlFor = addQuestionCounter;
             answerLabel.innerHTML = QAObj.answers[i];
-
-            formattedSection.appendChild(answerLabel);
-            formattedSection.appendChild(formattedAnswers);
             
+            formattedSection.appendChild(formattedAnswers);
+            formattedSection.appendChild(answerLabel);
         }
     }
-    
+    //the question/answers/answerType object gets encapsulated here as this gets
+    //called every time a new question is added anyway, so it diminishes a need
+    //to make another method just for this
+    QAObj.answerType = answerTypeObj;
+    arrayOfQuestions.push(QAObj);
+    console.log(arrayOfQuestions);
+
     viewQuestionSection.appendChild(formattedSection);
 
+    
+}
+
+//this responds to the remove question button onclick
+function removeQuestionFromDom(x){
+    return function(){
+        removeQuestionButtonArray[x].parentElement.remove();
+    }
 }
 
 //method that sends the questionAndAnswers object and the dropDownAnswerType variable
 //to the server for processing 
-function sendResultsToServer (dropdownAnswerType, questionAndAnswers){
+function sendResultsToServer (){
+    let httpRequest;
 
 }
 
@@ -171,6 +192,6 @@ const addQuestionButton = document.getElementById("addNewQuestionSubmitButton");
 addQuestionButton.addEventListener('click', event => {
     buildQuestion();
     sendResultsToServer();
-    radioButtonGroups += 1;
+    addQuestionCounter += 1;
 });
 

@@ -24,3 +24,8 @@
     clear: both;
     margin-bottom: 0.7em;
 }
+
+.removeQuestionButtonClass{
+    float: right;
+    clear: both;
+}
