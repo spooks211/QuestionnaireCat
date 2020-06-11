@@ -11,13 +11,15 @@ const path = require('path');
 //are stored
 const directoryPath = path.join(__dirname, 'questionnaires');
 
+const answerPath = path.join(__dirname, "answers");
+
 app.use(bodyParser.json());
 //this holds the selected questionnaire JSON, it is selected in viewQuestionnaires.html
 let selectedQuiz = {};
 
 app.use('/assets', express.static(`${__dirname}`));
 
-//these 4 app.gets establish routes for the server for the different html files
+//these 5 app.gets establish routes for the server for the different html files
 app.get('/', (req, res)=>{
     res.sendFile(`${__dirname}/index.html`);
 });
@@ -34,6 +36,10 @@ app.get('/answerQuestionnaire', (req, res)=>{
     res.sendFile(`${__dirname}/answerQuestionnaire.html`)
 });
 
+app.get('/downloadAnswers', (req, res)=>{
+    res.sendFile(`${__dirname}/downloadAnswers.html`);
+})
+
 //makes a json file for an entire questionnaire that was made in makeQuestionnaire.html
 app.post('/api/questionnaires', (req, res)=>{
     const questionnaireTitle = req.body[0].title;
@@ -47,6 +53,15 @@ app.post('/api/questionnaires', (req, res)=>{
     });
 });
 
+app.get('/api/downloadAnswers', (req, res)=>{
+    const answersFiles = fs.readdir(answerPath, function(err, files){
+        if (err){
+            return console.log("Unable to read directory. " + err);
+        }
+        res.json(files);
+    });
+});
+
 //reads the directory of questionnaires and sends the list to answerQuestionnaire.js
 app.get('/api/viewQuestionnaires', (req, res)=>{
     const directory = fs.readdir(directoryPath, function(err, files) {
@@ -54,6 +69,19 @@ app.get('/api/viewQuestionnaires', (req, res)=>{
             return console.log("Unable to read directory." + err);
         }
         res.json(files);
+    });
+});
+//saves the answers sent by the client to answers
+app.post('/api/answerQuestionnaire', (req,res)=>{
+    const answerTitle = req.body.questionnaireTitle;
+    const jsonAnswers = JSON.stringify(req.body);
+
+    fs.writeFile('./answers/' +answerTitle+ 'Answers.json' , jsonAnswers, err =>{
+        if(err){
+            console.log("Error writing to file", err);
+        }else{
+            console.log("Sucessfully written to file.");
+        }
     });
 });
 

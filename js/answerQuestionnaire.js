@@ -3,8 +3,15 @@
 let questionnaireToBeRendered = [];
 let uniqueIDCounter = 0;
 
-const QAarr = [];
+//contains all the text fields for the answers
+const textArray = [];
 
+//contains all the radio elements for the answers
+const radioArray = [];
+
+//object that contains the values for the answers, not the elements
+//so whether radio is checked or not, and what is in the text fields
+let answerObj = {};
 
 //receives an object from the server that contains the questionnaire that needs
 //to be rendered
@@ -31,7 +38,6 @@ function renderQuestionnaire(){
         newSection.id = i;
 
         question.innerHTML = questionnaireToBeRendered[i].question;
-        QAarr.push(question.innerHTML);
         newSection.appendChild(question);
         section.appendChild(newSection);
         
@@ -43,7 +49,8 @@ function renderQuestionnaire(){
                 answerText.type = "text";
                 answerText.placeholder = 'Enter an answer.';
                 answerText.id = "text" + uniqueIDCounter;
-                QAarr.push(answerText);
+                answerText.class = "textClass";
+                textArray.push(answerText);
 
                 newSection.appendChild(answerText);
                 section.appendChild(newSection);
@@ -57,7 +64,7 @@ function renderQuestionnaire(){
                 answerRadio.name = 'radio' + customIndex;
                 answerRadio.value = 'radio' + customIndex;
                 answerRadio.id = "radio" + uniqueIDCounter;
-                QAarr.push(answerRadio);
+                radioArray.push(answerRadio);
 
                 label.htmlFor = 'radio' + customIndex;
                 label.innerHTML = questionnaireToBeRendered[customIndex].answers[x];
@@ -71,11 +78,45 @@ function renderQuestionnaire(){
         customIndex+=1;
         uniqueIDCounter+=1; 
     }
-    
+    const submitAnswers = document.createElement('input');
+    submitAnswers.type = 'button';
+    submitAnswers.id = "submitAnswersButton";
+    submitAnswers.value = "Submit your answers";
+
+    section.appendChild(submitAnswers);
+
+    submitAnswers.addEventListener('click', event =>{
+        readAnswers();
+        sendResultsToServer();
+    });
 }
 
 function readAnswers(){
-    console.log(QAarr);
+    //middleman arrays that actually store the answers, not the elements
+    const textAnswerValues = []; 
+    const radioChecked = []; 
+
+    for (let i = 0 ; i < textArray.length; i++){
+        textAnswerValues.push(textArray[i].value);
+    }
+
+    for (let x = 0 ; x < radioArray.length; x++){
+        radioChecked.push(radioArray[x].checked);
+    }
+
+    answerObj.questionnaireTitle = questionnaireToBeRendered[0].title;
+    answerObj.textResponse = textAnswerValues;
+    answerObj.buttonsChecked = radioChecked;
+}
+
+async function sendResultsToServer(){
+    const sendResults = await fetch('/api/answerQuestionnaire',{
+        method : 'post',
+        headers: {
+            'content-type': 'application/json'
+        },
+        body: JSON.stringify(answerObj)
+    });
 }
 
 document.onreadystatechange = function(){
@@ -90,3 +131,4 @@ const reveal = document.getElementById("revealButton");
 reveal.addEventListener('click', event =>{
     renderQuestionnaire();
 });
+
