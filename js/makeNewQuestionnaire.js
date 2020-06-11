@@ -101,6 +101,11 @@ function readQuestionAndAnswers(){
         answerValueArray.push(answerFieldArray[x].value);
         }
     }
+
+    if (answerType == 'text'){
+        answerValueArray.push("a"); //fixes a bug where a text field wouldn't be made in answerQuestionnaire
+        //if a text option was chosen, as an empty array would be passed
+    }
     
     questionAndAnswers.answers = answerValueArray;
     return questionAndAnswers;

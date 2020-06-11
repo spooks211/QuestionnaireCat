@@ -40,6 +40,7 @@ function onClickCallFunction(x){
     return function (){
         selectedFile = selectedButtonArray[x];
         postRequest();
+        location.href='answerQuestionnaire';
     }
 }
 //sends the server which questionnaire was selected by the user

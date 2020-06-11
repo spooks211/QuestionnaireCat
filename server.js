@@ -5,18 +5,19 @@ const app = express();
 const fs = require('fs');
 const bodyParser = require('body-parser');
 const path = require('path');
-app.use(bodyParser.json());
+
 
 //makes a path for the questionnaire folder, where all the questionnaire files
 //are stored
 const directoryPath = path.join(__dirname, 'questionnaires');
 
+app.use(bodyParser.json());
 //this holds the selected questionnaire JSON, it is selected in viewQuestionnaires.html
 let selectedQuiz = {};
 
 app.use('/assets', express.static(`${__dirname}`));
 
-//these 4 app.gets establish routes for the server
+//these 4 app.gets establish routes for the server for the different html files
 app.get('/', (req, res)=>{
     res.sendFile(`${__dirname}/index.html`);
 });
@@ -29,6 +30,23 @@ app.get('/makeQuestionnaire',(req, res)=>{
     res.sendFile(`${__dirname}/makeQuestionnaire.html`);
 });
 
+app.get('/answerQuestionnaire', (req, res)=>{
+    res.sendFile(`${__dirname}/answerQuestionnaire.html`)
+});
+
+//makes a json file for an entire questionnaire that was made in makeQuestionnaire.html
+app.post('/api/questionnaires', (req, res)=>{
+    const questionnaireTitle = req.body[0].title;
+    const jsonQuestionnaire = JSON.stringify(req.body);
+    fs.writeFile('./questionnaires/'+questionnaireTitle+'.json', jsonQuestionnaire, err=>{
+        if (err){
+            console.log("Error writing to file ", err);
+        }else{
+            console.log("Suceesfully written to file.");
+        }
+    });
+});
+
 //reads the directory of questionnaires and sends the list to answerQuestionnaire.js
 app.get('/api/viewQuestionnaires', (req, res)=>{
     const directory = fs.readdir(directoryPath, function(err, files) {
@@ -38,6 +56,12 @@ app.get('/api/viewQuestionnaires', (req, res)=>{
         res.json(files);
     });
 });
+
+//this sends the object that contains the questionnaire that will be rendered on
+//answerQuestionnaire.html
+app.get('/api/answerQuestionnaire', (req,res)=>{
+    res.json(selectedQuiz);
+})
 
 //receives a filename from viewQuestionnaire and reads and parses that file into the
 //selectedQuiz object for later use
@@ -52,17 +76,6 @@ app.post('/api/viewQuestionnaires', (req , res) =>{
         selectedQuiz = JSON.parse(content);
     });
 });
-//makes a json file for an entire questionnaire that was made in makeQuestionnaire.html
-app.post('/api/questionnaires', (req, res)=>{
-    const questionnaireTitle = req.body[0].title;
-    const jsonQuestionnaire = JSON.stringify(req.body);
-    fs.writeFile('./questionnaires'+ questionnaireTitle + '.json', jsonQuestionnaire, err =>{
-        if (err){
-            console.log("Error writing file", err);
-        }else{
-            console.log("Sucessfuly written file");
-        }
-    });
-});
+
 
 app.listen(8080);
