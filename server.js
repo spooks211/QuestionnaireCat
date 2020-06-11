@@ -53,13 +53,18 @@ app.post('/api/questionnaires', (req, res)=>{
     });
 });
 
-app.get('/api/downloadAnswers', (req, res)=>{
+app.get('/api/downloadAnswers/', (req, res)=>{
     const answersFiles = fs.readdir(answerPath, function(err, files){
         if (err){
             return console.log("Unable to read directory. " + err);
         }
         res.json(files);
     });
+});
+
+app.get('/api/downloadAnswer/:id', (req,res)=>{
+    const f = req.params.id;
+    
 });
 
 //reads the directory of questionnaires and sends the list to answerQuestionnaire.js

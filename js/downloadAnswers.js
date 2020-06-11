@@ -20,27 +20,15 @@ function createFileElements(){
     const section = document.getElementById("buttonDownloadSection");
 
     for (let i = 0; i < arrayOfAnswerFiles[0].length; i++){
-        const downloadButtons = document.createElement('input');
-
-        downloadButtons.type = 'button';
+        const downloadButtons = document.createElement('a');
+        downloadButtons.href = `assets/answers/${arrayOfAnswerFiles[0][i]}`;
+        downloadButtons.download = arrayOfAnswerFiles[0][i];
         downloadButtons.id = arrayOfAnswerFiles[0][i];
-        downloadButtons.value = arrayOfAnswerFiles[0][i];
+        downloadButtons.textContent = arrayOfAnswerFiles[0][i];
         downloadButtons.class = arrayOfAnswerFiles[0][i];
         selectedButton.push(downloadButtons);
         section.appendChild(downloadButtons);
     }
-    for (let x = 0; x < selectedButton.length; x++){
-        selectedButton[x].addEventListener('click', clickDownload(x));
-    }
-} 
-
-//function that processes the click
-function clickDownload(x){
-    return function(){
-    downloadFile = selectedButton[x].id;
-    console.log(downloadFile);
-    }
-    
 }
 
 //gets all the answer files from the server onload
