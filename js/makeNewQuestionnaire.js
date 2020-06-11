@@ -14,7 +14,6 @@ removeButtonArray.push(document.getElementById("removeButton2"));
 //makes an array that stores all instances of the element "answerField"
 const answerFieldArray = [document.getElementById("answerField1")];
 answerFieldArray.push(document.getElementById("answerField2"));
-
 //this is made so each question/answer object gets added to an array that encapsulates 
 //the entire questionnaire, which then gets sent to the server
 let arrayOfQuestions = [];
@@ -29,7 +28,7 @@ function addNewAnswer(){
 
     newAnswer.className = "answerClass";
     newAnswer.type = "text";
-    newAnswer.placeholder = "Enter an answer";
+    newAnswer.placeholder = "Enter an answer.";
     newAnswer.id = "answerField" + newAnswerUniqueIdCounter;
     answerFieldArray.push(newAnswer);
 
@@ -84,9 +83,10 @@ function readAnswerType(){
 function readQuestionAndAnswers(){
     const answerValueArray = [];
     let questionAndAnswers = {};
+    const answerType = readAnswerType();
 
     questionAndAnswers.question = document.getElementById("questionInputField").value;
-
+    questionAndAnswers.title = document.getElementById("questionnaireTitle").value;
     //this was added to keep the answerFieldArray array up to date with
     //the currently present answer text fields in the dom, there was a bug
     //where deleted answers remained present in the questionAndAnswers object
@@ -96,10 +96,12 @@ function readQuestionAndAnswers(){
             answerFieldArray.splice(i , 1);
         }
     }
-
-    for (let x = 0; x < answerFieldArray.length; x++){
+    if (answerType == 'radio'){
+        for (let x = 0; x < answerFieldArray.length; x++){
         answerValueArray.push(answerFieldArray[x].value);
+        }
     }
+    
     questionAndAnswers.answers = answerValueArray;
     return questionAndAnswers;
 }
@@ -153,7 +155,6 @@ function buildQuestion(){
 }
 
 async function sendResultsToServer(){
-    console.log(arrayOfQuestions);
     const response = await fetch('/api/questionnaires', {
         method: 'post',
         headers: {
